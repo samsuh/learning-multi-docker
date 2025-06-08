@@ -10,18 +10,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker build -t samsuh/react-test-up -f ./client/Dockerfile.dev ./client
-      - run: docker run -e CI=true samsuh/react-test-up npm test
+      - run: docker build -t samsuh/react-test -f ./client/Dockerfile.dev ./client
+      - run: docker run -e CI=true samsuh/react-test npm test
 
-      - run: docker build -t samsuh/multi-client-up ./client
-      - run: docker build -t samsuh/multi-nginx-up ./nginx
-      - run: docker build -t samsuh/multi-server-up ./server
-      - run: docker build -t samsuh/multi-worker-up ./worker
+      - run: docker build -t samsuh/multi-client ./client
+      - run: docker build -t samsuh/multi-nginx ./nginx
+      - run: docker build -t samsuh/multi-server ./server
+      - run: docker build -t samsuh/multi-worker ./worker
 
-      - run: docker push samsuh/multi-client-up
-      - run: docker push samsuh/multi-nginx-up
-      - run: docker push samsuh/multi-server-up
-      - run: docker push samsuh/multi-worker-up
+      - run: docker push samsuh/multi-client
+      - run: docker push samsuh/multi-nginx
+      - run: docker push samsuh/multi-server
+      - run: docker push samsuh/multi-worker
 
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
@@ -31,9 +31,9 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
           aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
-          application_name: multi-docker
-          environment_name: Multi-docker-env
-          existing_bucket_name: elasticbeanstalk-us-east-2-797065139741
-          region: us-east-2
+          application_name: multi-gh
+          environment_name: Multigh-env
+          existing_bucket_name: elasticbeanstalk-us-east-1-923445559289
+          region: us-east-1
           version_label: ${{ github.sha }}
           deployment_package: deploy.zip
